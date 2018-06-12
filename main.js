@@ -3,8 +3,11 @@ const yargs = require('yargs');
 const request = require('request');
 const _ = require('underscore');
 const fs = require('fs');
-var measure = require('measure');
-var collectTime = measure.measure('timer1');
+const measure = require('measure');
+const collectTime1 = measure.measure('timer1');
+const collectTime2 = measure.measure('timer2');
+const collectTime3 = measure.measure('timer3');
+const collectTime4 = measure.measure('timer4');
 
 const argv = yargs
   .command('get', 'Get Videos Details', {
@@ -111,50 +114,55 @@ getPageIdName().then((pageInfo) => {
     let dataObj = {};
     let likeProms = [];
     _.each(data, (video) => {
-      dataObj[video.id] = video
+      dataObj[video.id] = video;
 
       getVideoLikeReactComment(video.id, 'likes').then((res) => {
         console.log('Getting Data..');
-        if(!dataObj[res.id])
-          dataObj[res.id] = {}
 
         //Setting pageId to video
         dataObj[res.id].pageId = pageInfo.id;
         //Setting pageName to video
         dataObj[res.id].pageName = pageInfo.name;
 
-        let value = JSON.parse(res.value)
+        let value = JSON.parse(res.value);
         dataObj[res.id].likes = value.summary.total_count;
+        //save
         saveToFile(dataObj);
+        collectTime1();
+        console.log(measure.stats('timer1'));
       });
 
       getVideoLikeReactComment(video.id, 'reactions').then((res) => {
         console.log('Getting Data..');
-        if(!dataObj[res.id])
-          dataObj[res.id] = {}
-        let value = JSON.parse(res.value)
+
+        let value = JSON.parse(res.value);
         dataObj[res.id].reactions = value.summary.total_count;
+        //save
         saveToFile(dataObj);
+        collectTime2();
+        console.log(measure.stats('timer2'));
       });
 
       getVideoLikeReactComment(video.id, 'comments').then((res) => {
         console.log('Getting Data..');
-        if(!dataObj[res.id])
-          dataObj[res.id] = {}
-        let value = JSON.parse(res.value)
+
+        let value = JSON.parse(res.value);
         dataObj[res.id].comments = value.summary.total_count;
+        //save
         saveToFile(dataObj);
+        collectTime3();
+        console.log(measure.stats('timer3'));
       });
 
       getVideoShares(video.id, pageInfo.id).then((res) => {
         console.log('Getting Data..');
-        if(!dataObj[res.id])
-          dataObj[res.id] = {}
-        let value = JSON.parse(res.value)
+
+        let value = JSON.parse(res.value);
         dataObj[res.id].shares = value.shares && value.shares.count;
+        //save
         saveToFile(dataObj);
-        collectTime();
-        console.log(measure.stats('timer1'));
+        collectTime4();
+        console.log(measure.stats('timer4'));
       });
 
     });
@@ -166,6 +174,6 @@ getPageIdName().then((pageInfo) => {
 function saveToFile(dataObj){
   return fs.writeFile('data.json', JSON.stringify(dataObj, null, 4), (err) => {
     if(err)
-      console.error('error while saving data')
+      console.error('error while saving data');
   });
 }
