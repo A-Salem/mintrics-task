@@ -1,0 +1,17 @@
+{
+  "name": "mintrics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ahmed Salem",
+  "license": "ISC",
+  "dependencies": {
+    "measure": "^0.1.1",
+    "request": "^2.87.0",
+    "underscore": "^1.9.1",
+    "yargs": "^11.0.0"
+  }
+}
